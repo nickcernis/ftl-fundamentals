@@ -6,29 +6,56 @@ import (
 	"math"
 )
 
-// Add takes two numbers and returns the result of adding them together.
-func Add(a, b float64) float64 {
-	return a + b
+// Add takes numbers and returns the result of adding them together.
+func Add(ns ...float64) float64 {
+	result := 0.0
+	for _, n := range ns {
+		result += n
+	}
+	return result
 }
 
-// Subtract takes two numbers and returns the result of subtracting the second
-// from the first.
-func Subtract(a, b float64) float64 {
-	return a - b
-}
-
-// Multiply returns the product of two numbers.
-func Multiply(a, b float64) float64 {
-	return a * b
-}
-
-// Divide returns a divided by b or 0, error if division could not be performed.
-func Divide(a, b float64) (float64, error) {
-	if b == 0 {
-		return 0, errors.New("division by zero is undefined")
+// Subtract takes numbers and returns the result of subtracting them in turn.
+func Subtract(ns ...float64) float64 {
+	if len(ns) == 0 {
+		return 0
 	}
 
-	return a / b, nil
+	result := ns[0]
+	for _, n := range ns[1:] {
+		result -= n
+	}
+	return result
+}
+
+// Multiply returns the product of multiple numbers.
+func Multiply(ns ...float64) float64 {
+	if len(ns) == 0 {
+		return 0
+	}
+
+	result := ns[0]
+	for _, n := range ns[1:] {
+		result *= n
+	}
+	return result
+}
+
+// Divide returns numbers divided in turn or 0, error if division could not be performed.
+func Divide(ns ...float64) (float64, error) {
+	if len(ns) == 0 {
+		return 0, nil
+	}
+
+	result := ns[0]
+	for _, n := range ns[1:] {
+		if n == 0 {
+			return 0, errors.New("division by zero is undefined")
+		}
+		result /= n
+	}
+
+	return result, nil
 }
 
 // Sqrt returns the square root of x or 0, error if x is negative.
