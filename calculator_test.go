@@ -3,6 +3,7 @@ package calculator_test
 import (
 	"calculator"
 	"fmt"
+	"math"
 	"math/rand"
 	"testing"
 	"time"
@@ -114,6 +115,41 @@ func TestDivide(t *testing.T) {
 
 		if !tc.errExpected && tc.want != got {
 			t.Errorf("%s: Divide(%f, %f): want %f, got %f", tc.name, tc.a, tc.b, tc.want, got)
+		}
+	}
+}
+
+func closeEnough(a, b, tolerance float64) bool {
+	return math.Abs(a-b) <= tolerance
+}
+
+func TestSqrt(t *testing.T) {
+	t.Parallel()
+
+	type sqrtTestCase struct {
+		name        string
+		x           float64
+		want        float64
+		errExpected bool
+	}
+
+	testCases := []sqrtTestCase{
+		{name: "Regular square root", x: 10, want: 3.1622776602, errExpected: false},
+		{name: "Decimal square root", x: 7.5, want: 2.7386127875, errExpected: false},
+		{name: "Root of negative", x: -2, want: 0, errExpected: true},
+	}
+
+	for _, tc := range testCases {
+		got, err := calculator.Sqrt(tc.x)
+
+		errReceived := err != nil
+
+		if tc.errExpected != errReceived {
+			t.Fatalf("%s: Sqrt(%f): %s", tc.name, tc.x, err.Error())
+		}
+
+		if !tc.errExpected && !closeEnough(tc.want, got, 0.001) {
+			t.Errorf("%s: Sqrt(%f): want %f, got %f", tc.name, tc.x, tc.want, got)
 		}
 	}
 }
