@@ -60,3 +60,34 @@ func TestMultiply(t *testing.T) {
 		}
 	}
 }
+
+func TestDivide(t *testing.T) {
+	t.Parallel()
+
+	type divideTestCase struct {
+		name        string
+		a, b        float64
+		want        float64
+		errExpected bool
+	}
+
+	testCases := []divideTestCase{
+		{name: "Regular division", a: 10, b: 5, want: 2, errExpected: false},
+		{name: "Decimal division", a: 10, b: 2.5, want: 4, errExpected: false},
+		{name: "Division by zero", a: 10, b: 0, want: 0, errExpected: true},
+	}
+
+	for _, tc := range testCases {
+		got, err := calculator.Divide(tc.a, tc.b)
+
+		errReceived := err != nil
+
+		if tc.errExpected != errReceived {
+			t.Fatalf("%s: Divide(%f, %f): %s", tc.name, tc.a, tc.b, err.Error())
+		}
+
+		if !tc.errExpected && tc.want != got {
+			t.Errorf("%s: Divide(%f, %f): want %f, got %f", tc.name, tc.a, tc.b, tc.want, got)
+		}
+	}
+}
