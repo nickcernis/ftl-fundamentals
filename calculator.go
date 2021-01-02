@@ -41,6 +41,19 @@ func Multiply(ns ...float64) float64 {
 	return result
 }
 
+// Multiply returns the product of multiple numbers.
+func Multiply(ns ...float64) float64 {
+	if len(ns) == 0 {
+		return 0
+	}
+
+	result := ns[0]
+	for _, n := range ns[1:] {
+		result *= n
+	}
+	return result
+}
+
 // Divide returns numbers divided in turn or 0, error if division could not be performed.
 func Divide(ns ...float64) (float64, error) {
 	if len(ns) == 0 {
