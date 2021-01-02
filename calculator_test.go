@@ -161,3 +161,38 @@ func TestSqrt(t *testing.T) {
 		}
 	}
 }
+
+func TestEvaluate(t *testing.T) {
+	t.Parallel()
+
+	type TestCase struct {
+		name        string
+		expression  string
+		want        float64
+		errExpected bool
+	}
+
+	testCases := []TestCase{
+		{name: "Multiplication", expression: "2 * 2", want: 4, errExpected: false},
+		{name: "Addition", expression: "1 + 1.5", want: 2.5, errExpected: false},
+		{name: "Division", expression: "18    /     6", want: 3, errExpected: false},
+		{name: "Subtraction", expression: "100 - 0.1", want: 99.9, errExpected: false},
+		{name: "Unknown operator", expression: "100 & 0.1", want: 0, errExpected: true},
+		{name: "Prefix format", expression: "+ 1 2", want: 0, errExpected: true},
+		{name: "Division by zero", expression: "10 / 0", want: 0, errExpected: true},
+	}
+
+	for _, tc := range testCases {
+		got, err := calculator.Evaluate(tc.expression)
+
+		errReceived := err != nil
+
+		if tc.errExpected != errReceived {
+			t.Fatalf("%s had unexpected error status: %s", tc.name, err.Error())
+		}
+
+		if !tc.errExpected && !closeEnough(tc.want, got, 0.001) {
+			t.Errorf("%s: want %f, got %f", tc.name, tc.want, got)
+		}
+	}
+}
